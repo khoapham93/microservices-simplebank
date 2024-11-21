@@ -1,0 +1,39 @@
+version: "3.7"
+services:
+  accounts:
+    image: "khoapv93/account:v1"
+    container_name: account-ms
+    ports:
+      - 8080:8080
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - simplebank
+
+  loans:
+    image: "khoapv93/loans:v1"
+    container_name: loans-ms
+    ports:
+      - 8090:8090
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - simplebank
+  cards:
+    image: "khoapv93/cards:v1"
+    container_name: cards-ms
+    ports:
+      - 9000:9000
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - simplebank
+networks:
+  simplebank:
+    driver: "bridge"
