@@ -5,3 +5,7 @@
 *.iml
 *.ipr
 
+### Build files ###
+**/target/
+
+.DS_Store
