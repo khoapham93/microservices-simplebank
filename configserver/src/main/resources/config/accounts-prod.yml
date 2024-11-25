@@ -1,0 +1,8 @@
+build:
+  version: "1.0"
+
+contact:
+  message: "Welcome to simple bank microservice, this properties to test record object - prod profile"
+  contact-details:
+    name: "KP"
+    email: "{cipher}443b58af4a1871f36385dbc4c9845693b6302a25b9c3abceb45a533fc0f848eaa2643c33857d1d273325067e512b3008"

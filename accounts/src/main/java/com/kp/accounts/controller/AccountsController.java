@@ -3,6 +3,8 @@ package com.kp.accounts.controller;
 import com.kp.accounts.constants.AccountsConstants;
 import com.kp.accounts.dto.CustomerDto;
 import com.kp.accounts.dto.ResponseDto;
+import com.kp.accounts.properties.BuildVersion;
+import com.kp.accounts.properties.ContactInfo;
 import com.kp.accounts.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AccountsController {
     private final AccountService accountService;
+    private final ContactInfo contactInfo;
+    private final BuildVersion buildVersion;
 
     @Operation(
             summary = "Create a bank account REST API",
@@ -81,4 +85,18 @@ public class AccountsController {
         }
     }
 
+    @GetMapping("/info/test")
+    public ResponseEntity<ContactInfo> deleteAccount() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(contactInfo);
+
+    }
+
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion.version());
+    }
 }

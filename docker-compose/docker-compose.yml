@@ -1,0 +1,63 @@
+
+services:
+  configserver:
+    image: "khoapv93/configserver:v2"
+    container_name: configserver-ms
+    ports:
+      - 8071:8071
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+#      test: ["CMD", "curl", "-f", "localhost:8071/actuator/health/readines"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservices-base-config
+
+  accounts:
+    image: "khoapv93/accounts:v2"
+    container_name: account-ms
+    ports:
+      - 8080:8080
+    depends_on:
+      configserver:
+        condition: service_healthy # Must to define health check like above steps first
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  loans:
+    image: "khoapv93/loans:v2"
+    container_name: loans-ms
+    ports:
+      - 8090:8090
+    depends_on:
+      configserver:
+        condition: service_healthy # Must to define health check like above steps first
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+  cards:
+    image: "khoapv93/cards:v2"
+    container_name: cards-ms
+    ports:
+      - 9000:9000
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+networks:
+  simplebank:
+    driver: "bridge"

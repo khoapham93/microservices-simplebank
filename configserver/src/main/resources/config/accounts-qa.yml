@@ -1,0 +1,8 @@
+build:
+  version: "2.0"
+
+contact:
+  message: "Welcome to simple bank microservice, this properties to test record object - QA profile"
+  contact-details:
+    name: "KP"
+    email: "vietkhoa93@gmail.com"

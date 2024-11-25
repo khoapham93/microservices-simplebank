@@ -4,6 +4,8 @@ import com.kp.loans.constants.LoansConstants;
 import com.kp.loans.dto.ErrorResponseDto;
 import com.kp.loans.dto.LoansDto;
 import com.kp.loans.dto.ResponseDto;
+import com.kp.loans.properties.BuildVersion;
+import com.kp.loans.properties.ContactInfo;
 import com.kp.loans.service.LoansService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +37,14 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RestController
 @RequestMapping(path = "/loans", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Validated
 public class LoansController {
 
-    private LoansService loansService;
+    private final LoansService loansService;
+    private final ContactInfo contactInfo;
+    private final BuildVersion buildVersion;
+
 
     @Operation(
             summary = "Create Loan REST API",
@@ -127,5 +133,18 @@ public class LoansController {
                     .body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE));
         }
     }
+    @GetMapping("/info/test")
+    public ResponseEntity<ContactInfo> deleteAccount() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(contactInfo);
 
+    }
+
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion.version());
+    }
 }
