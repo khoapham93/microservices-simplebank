@@ -9,3 +9,6 @@
 **/target/
 
 .DS_Store
+
+# Ignore all postgres_data directories in docker-compose folder
+docker-compose/**/postgres_data/

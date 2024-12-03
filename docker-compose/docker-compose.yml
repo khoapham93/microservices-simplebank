@@ -1,5 +1,23 @@
-
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_multi_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_MULTIPLE_DATABASES: accounts,cards,loans
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
   configserver:
     image: "khoapv93/configserver:v2"
     container_name: configserver-ms
@@ -22,10 +40,13 @@ services:
     ports:
       - 8080:8080
     depends_on:
+      postgres:
+        condition: service_healthy
       configserver:
         condition: service_healthy # Must to define health check like above steps first
     environment:
       SPRING_APPLICATION_NAME: "accounts"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5433/accounts"
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -36,10 +57,13 @@ services:
     ports:
       - 8090:8090
     depends_on:
+      postgres:
+        condition: service_healthy
       configserver:
         condition: service_healthy # Must to define health check like above steps first
     environment:
       SPRING_APPLICATION_NAME: "loans"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5433/loans"
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -50,10 +74,13 @@ services:
     ports:
       - 9000:9000
     depends_on:
+      postgres:
+        condition: service_healthy
       configserver:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "cards"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5433/cards"
     extends:
       file: common-config.yml
       service: microservice-configserver-config

@@ -10,16 +10,25 @@ spring:
     active: "prod"
   config:
     import: "optional:configserver:http://configserver:8071/"
+#    import: "optional:configserver:http://localhost:8071/" #Running in local
+
   datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
-  h2:
-    console:
-      enabled: true
+    #    url: 'jdbc:postgresql://postgres:5433/accounts' #Running in container
+    url: 'jdbc:postgresql://localhost:5433/accounts' #Running in local
+    username: postgres
+    password: changeme
+    driver-class-name: org.postgresql.Driver
+  #    hikari:
+  #      schema: 'accounts'
+
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: POSTGRESQL
     show-sql: true
+    hibernate.ddl-auto: update
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
